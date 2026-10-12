@@ -2,24 +2,33 @@
 
 ## 1. Mục tiêu
 
-Cấu hình Gradle Dependency Caching bằng `cache: 'gradle'` trong `actions/setup-java@v5` để giảm thời gian tải thư viện khi chạy CI.
+Cấu hình GitHub Actions sử dụng Gradle Dependency Caching nhằm giảm thời gian chạy CI cho dự án Java Spring Boot sử dụng Gradle.
 
-## 2. Cấu hình
+## 2. Cấu hình workflow
 
-- Java: 17
-- Distribution: Temurin
-- Cache: `gradle`
-- Lệnh kiểm thử: `./gradlew test`
+Workflow được đặt tại `.github/workflows/ci.yml`, sử dụng:
+
+- `actions/checkout@v4`: tải mã nguồn.
+- `actions/setup-java@v5`: thiết lập JDK 17 Temurin.
+- `cache: 'gradle'`: bật cơ chế lưu và khôi phục Gradle cache.
+- `./gradlew test`: thực thi kiểm thử tự động.
 
 ## 3. Kết quả thực nghiệm
 
-| Thông tin | Lần chạy 1 | Lần chạy 2 |
-|---|---|---|
-| Tổng thời gian Job | 52 giây | Chưa ghi nhận riêng |
-| Trạng thái cache đầu Job | Cache chưa được tìm thấy | Cache chưa được tìm thấy |
-| Trạng thái cuối Job | Chưa ghi nhận | Cache đã lưu thành công |
-| Gradle test | Chưa ghi nhận | Khoảng 40 giây theo log Job |
+| Lần chạy | Commit | Thời gian chạy test | Kết quả |
+|---|---|---:|---|
+| #1 | `b21d6c0` | 38 giây | Thành công |
+| #2 | `e14a920` | 16 giây | Thành công |
+| #3 | `c8c2fee` | 17 giây | Thành công |
 
-## 4. Kết luận
+Ở lần chạy đầu tiên, Gradle Wrapper phải tải Gradle 9.7.1. Ở lần chạy mới nhất, Gradle cache đã được khôi phục thành công.
 
-Workflow chạy thành công. Ở lần chạy thứ hai, GitHub Actions đã lưu thành công Gradle Wrapper cache và Gradle Dependencies cache. Cần xác minh việc khôi phục cache ở lần chạy tiếp theo để đánh giá hiệu quả tối ưu thời gian.
+## 4. Đánh giá
+
+So với lần chạy đầu tiên, lần chạy thứ ba giảm từ 38 giây xuống 17 giây, tiết kiệm 21 giây, tương đương khoảng 55,3%.
+
+Kết quả cho thấy thời gian chạy Gradle giảm ở các lần chạy sau. Tuy nhiên, mức cải thiện không chỉ đến từ Dependency Caching mà còn có thể liên quan đến việc không phải tải lại Gradle Wrapper và quá trình khởi tạo Gradle.
+
+## 5. Kết luận
+
+Đã cấu hình thành công Gradle Dependency Caching trong GitHub Actions. Cả ba lần chạy workflow đều hoàn thành với kết quả `BUILD SUCCESSFUL`. Lần chạy mới nhất xác nhận cache được khôi phục thành công, đáp ứng mục tiêu thực hành tối ưu tốc độ CI.
