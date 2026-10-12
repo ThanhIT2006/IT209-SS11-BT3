@@ -2,22 +2,24 @@
 
 ## 1. Mục tiêu
 
-Cấu hình Gradle Dependency Caching để giảm thời gian tải thư viện khi chạy CI trên GitHub Actions.
+Cấu hình Gradle Dependency Caching bằng `cache: 'gradle'` trong `actions/setup-java@v5` để giảm thời gian tải thư viện khi chạy CI.
 
 ## 2. Cấu hình
-
-Trong `.github/workflows/ci.yml`, sử dụng `actions/setup-java@v5` với các tham số:
 
 - Java: 17
 - Distribution: Temurin
 - Cache: `gradle`
+- Lệnh kiểm thử: `./gradlew test`
 
-## 3. Kết quả lần chạy thứ nhất
+## 3. Kết quả thực nghiệm
 
-- Trạng thái workflow: Success.
-- Tổng thời gian Job: 52 giây.
-- Trạng thái cache: `gradle cache is not found`.
+| Thông tin | Lần chạy 1 | Lần chạy 2 |
+|---|---|---|
+| Tổng thời gian Job | 52 giây | Chưa ghi nhận riêng |
+| Trạng thái cache đầu Job | Cache chưa được tìm thấy | Cache chưa được tìm thấy |
+| Trạng thái cuối Job | Chưa ghi nhận | Cache đã lưu thành công |
+| Gradle test | Chưa ghi nhận | Khoảng 40 giây theo log Job |
 
-## 4. Kết quả lần chạy thứ hai
+## 4. Kết luận
 
-Sẽ cập nhật thời gian thực tế và trạng thái cache sau khi workflow chạy lại.
+Workflow chạy thành công. Ở lần chạy thứ hai, GitHub Actions đã lưu thành công Gradle Wrapper cache và Gradle Dependencies cache. Cần xác minh việc khôi phục cache ở lần chạy tiếp theo để đánh giá hiệu quả tối ưu thời gian.
