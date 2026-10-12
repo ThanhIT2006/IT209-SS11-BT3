@@ -29,6 +29,3 @@ So với lần chạy đầu tiên, lần chạy thứ ba giảm từ 38 giây x
 
 Kết quả cho thấy thời gian chạy Gradle giảm ở các lần chạy sau. Tuy nhiên, mức cải thiện không chỉ đến từ Dependency Caching mà còn có thể liên quan đến việc không phải tải lại Gradle Wrapper và quá trình khởi tạo Gradle.
 
-## 5. Kết luận
-
-Đã cấu hình thành công Gradle Dependency Caching trong GitHub Actions. Cả ba lần chạy workflow đều hoàn thành với kết quả `BUILD SUCCESSFUL`. Lần chạy mới nhất xác nhận cache được khôi phục thành công, đáp ứng mục tiêu thực hành tối ưu tốc độ CI.
